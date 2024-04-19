@@ -15,7 +15,7 @@ app.use(express.json());
 
 //Databasanslutning
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("Ansluten till MongoDB"))
+.then(() => console.log("Ansluten till MongoDB Atlas"))
 .catch(err => console.error("Kunde inte ansluta till MongoDB", err));
 
 //Modell
@@ -74,6 +74,33 @@ app.post("/workexp", async(req, res) => {
         res.json(result);
     } catch (error) {
         return res.status(400).json(error);
+    }
+});
+
+app.put("/workexp/:id", async (req, res) => {
+    try {
+        const result = await workExperience.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+        );
+        if (!result) {
+            return res.status(404).json({ message: 'Ingen post hittades med det angivna ID:t' });
+        }
+        res.json(result);
+    } catch (error) {
+        return res.status(500).json({ message: 'Serverfel vid uppdatering av post' });
+    }
+});
+
+app.delete("/workexp/:id", async (req, res) => {
+    try {
+        const result = await workExperience.findByIdAndDelete(req.params.id);
+        if (!result) {
+            return res.status(404).json({ message: 'Ingen post hittades med det angivna ID:t' });
+        }
+        res.json({ message: "Posten har raderats" });
+    } catch (error) {
+        return res.status(500).json({ message: 'Serverfel vid radering av post' });
     }
 });
 
