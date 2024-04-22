@@ -59,7 +59,7 @@ app.get("/api", async (req, res) => {
 
 app.get("/workexp", async(req, res) => {
     try {
-        let result = await workExperience.find({});
+        let result = await workExperience.find({}).sort({startdate: -1});
 
         return res.json(result);
     } catch(error) {
